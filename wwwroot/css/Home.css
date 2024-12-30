@@ -1,0 +1,11 @@
+.custom-card-index {
+    background-color:#dbdbdb;
+    width: 100%;
+    max-width: 300px;
+    box-shadow: -1px 13px 18px 10px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+  }
+
+  .custom-card-index:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  }
