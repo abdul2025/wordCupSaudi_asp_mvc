@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using worldcup.Data;
 using worldcup.Models;
 
 namespace worldcup.Controllers;
@@ -7,23 +8,31 @@ namespace worldcup.Controllers;
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
+    private readonly ApplicationDbContext _context;
 
-    public HomeController(ILogger<HomeController> logger)
+    // Combined constructor to inject both dependencies
+
+    public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
     {
         _logger = logger;
+        _context = context;
+
     }
 
     public IActionResult Index()
     {
-        var categories = new List<Categories>
-        {
-            new Categories { Id = 1, Name = "Stadiums", Description = "Find the Stadiums in the Kingdom", Icon = "fa-solid fa-futbol", Url = "Stadiums" , Image="murabba-Stadium.webp"},
-            new Categories { Id = 2, Name = "Hotels", Description = "Book the finest hotels for your stay.", Icon = "fa-solid fa-hotel", Url = "Hotels" , Image="hotel-exterior.jpg"},
-            new Categories { Id = 3, Name = "Transportation", Description = "Convenient transport options for your journey.", Icon ="fa-solid fa-helicopter", Url = "Transportation" , Image="transportation.webp"},
-            new Categories { Id = 4, Name = "Match Schedule", Description = "Keep track of match timings and venues.", Icon ="fa-regular fa-calendar-days", Url = "Schedule" , Image="Match-Schedule.jpg"},
-            new Categories { Id = 5, Name = "Tickets", Description = "Get tickets for your favorite matches.", Icon ="fa-solid fa-ticket", Url = "Tickets" , Image="tickets.png"},
-            new Categories { Id = 6, Name = "Beverages", Description = "Explore nearby food and drink options.", Icon ="fa-duotone fa-solid fa-utensils", Url = "Beverages", Image="food.jpeg" }
-        };
+        // var categories = new List<Categories>
+        // {
+        //     new Categories { Id = 1, Name = "Stadiums", Description = "Find the Stadiums in the Kingdom", Icon = "fa-solid fa-futbol", Url = "Stadiums" , Image="murabba-Stadium.webp"},
+        //     new Categories { Id = 2, Name = "Hotels", Description = "Book the finest hotels for your stay.", Icon = "fa-solid fa-hotel", Url = "Hotels" , Image="hotel-exterior.jpg"},
+        //     new Categories { Id = 3, Name = "Transportation", Description = "Convenient transport options for your journey.", Icon ="fa-solid fa-helicopter", Url = "Transportation" , Image="transportation.webp"},
+        //     new Categories { Id = 4, Name = "Match Schedule", Description = "Keep track of match timings and venues.", Icon ="fa-regular fa-calendar-days", Url = "Schedule" , Image="Match-Schedule.jpg"},
+        //     new Categories { Id = 5, Name = "Tickets", Description = "Get tickets for your favorite matches.", Icon ="fa-solid fa-ticket", Url = "Tickets" , Image="tickets.png"},
+        //     new Categories { Id = 6, Name = "Meals and Beverages", Description = "Explore nearby food and drink options.", Icon ="fa-duotone fa-solid fa-utensils", Url = "Beverages", Image="food.jpeg" }
+        // };
+
+        var categories = _context.Categories.ToList();
+
 
 
         return View(categories);
@@ -40,7 +49,7 @@ public IActionResult Stadiums()
             Capacity = 75000, 
             City = "Riyadh", 
             Type = "Football", 
-            ConstractionDate = new DateTime(1987, 1, 1),
+            ContractionDate = new DateTime(1987, 1, 1),
             Owner = "Saudi Government",
             Length = 105, 
             Width = 68, 
@@ -55,7 +64,7 @@ public IActionResult Stadiums()
             Capacity = 25000, 
             City = "Riyadh", 
             Type = "Football", 
-            ConstractionDate = new DateTime(2015, 1, 1),
+            ContractionDate = new DateTime(2015, 1, 1),
             Owner = "King Saud University",
             Length = 105, 
             Width = 70, 
@@ -70,7 +79,7 @@ public IActionResult Stadiums()
             Capacity = 62000, 
             City = "Jeddah", 
             Type = "Football", 
-            ConstractionDate = new DateTime(2014, 1, 1),
+            ContractionDate = new DateTime(2014, 1, 1),
             Owner = "Saudi Government",
             Length = 110, 
             Width = 72, 
@@ -85,7 +94,7 @@ public IActionResult Stadiums()
             Capacity = 26500, 
             City = "Dammam", 
             Type = "Football", 
-            ConstractionDate = new DateTime(1997, 1, 1),
+            ContractionDate = new DateTime(1997, 1, 1),
             Owner = "Saudi Government",
             Length = 105, 
             Width = 68, 
@@ -100,7 +109,7 @@ public IActionResult Stadiums()
             Capacity = 22000, 
             City = "Abha", 
             Type = "Football", 
-            ConstractionDate = new DateTime(1985, 1, 1),
+            ContractionDate = new DateTime(1985, 1, 1),
             Owner = "Saudi Government",
             Length = 100, 
             Width = 65, 
@@ -115,7 +124,7 @@ public IActionResult Stadiums()
             Capacity = 27000, 
             City = "Al-Majma'ah", 
             Type = "Football", 
-            ConstractionDate = new DateTime(2008, 1, 1),
+            ContractionDate = new DateTime(2008, 1, 1),
             Owner = "Saudi Government",
             Length = 105, 
             Width = 70, 
