@@ -1,3 +1,7 @@
+@inject worldcup.Services.AdminServices.ICatogeryService CatogeryService
+@{
+    var categories = await CatogeryService.GetCategories() ?? Enumerable.Empty<Categories>();
+}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -432,31 +436,17 @@
                                     <li class="active">
                                         <a href="#" onClick="return false;" class="menu-toggle">
                                             <i data-feather="monitor"></i>
-                                            <span>Home</span>
+                                            <span>Main Categories</span>
                                         </a>
                                         <ul class="ml-menu">
-                                            <li style="list-style: none !important">
-                                                <a asp-action="Categories">Categories</a>
-                                            </li>
                                             <li >
-                                                <a asp-action="Stadiums">Stadiums</a>
+                                                <a asp-action="Categories">Show Categories</i></a>
                                             </li>
-                                            <li >
-                                                <a asp-action="Transportation">Transportation</a>
-                                            </li>
-                                            <li >
-                                                <a asp-action="Transportation">Schedule</a>
-                                            </li>
-                                            <li >
-                                                <a asp-action="Transportation">Hotels</a>
-                                            </li>
-                                            <li >
-                                                <a asp-action="Transportation">Tickets</a>
-                                            </li>
-                                            <li >
-                                                <a asp-action="Beverages">Beverages</a>
-                                            </li>
-                                            
+                                            @foreach (var category in categories){
+                                                <li>
+                                                    <a asp-action="@category.Name">@category.Name <i class="@category.Icon"></i></a>
+                                                </li>
+                                            }
                                         </ul>
                                     </li>
                                     <li>

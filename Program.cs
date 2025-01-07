@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using worldcup.Data;
+using worldcup.Services.AdminServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,12 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options => {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+
+
+
+
+// Add services to the container.
+builder.Services.AddScoped<ICatogeryService, CategoryService>();
 
 var app = builder.Build();
 

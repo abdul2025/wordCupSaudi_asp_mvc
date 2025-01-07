@@ -12,8 +12,6 @@ namespace worldcup.Models
 
         public required DateTime MatchDateTime { get; set; }
 
-        [ForeignKey("CityId")]
-        public required Cities City { get; set; } // Navigation Property
 
         [ForeignKey("StadiumId")]
         public required Stadiums Stadium { get; set; } // Navigation Property

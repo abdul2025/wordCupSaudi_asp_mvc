@@ -1,5 +1,6 @@
 
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace worldcup.Models
 {
@@ -9,7 +10,9 @@ namespace worldcup.Models
         public int Id { get; set; }
         public required string Name { get; set; }
         public int Capacity { get; set; }
-        public required string City { get; set; }
+        
+        [ForeignKey("CityId")]
+        public required Cities City { get; set; } // Navigation Property
         public required string Type { get; set; }
         public DateTime ContractionDate { get; set; }
         public required string Owner {get;set;}
