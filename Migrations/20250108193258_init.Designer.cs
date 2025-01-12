@@ -12,8 +12,8 @@ using worldcup.Data;
 namespace worldcup.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250106175104_deleteCityFromSheduleandAddItToStidum")]
-    partial class deleteCityFromSheduleandAddItToStidum
+    [Migration("20250108193258_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,21 +24,6 @@ namespace worldcup.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("ScheduleTeams", b =>
-                {
-                    b.Property<int>("ScheduleId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TeamsId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ScheduleId", "TeamsId");
-
-                    b.HasIndex("TeamsId");
-
-                    b.ToTable("ScheduleTeams");
-                });
 
             modelBuilder.Entity("worldcup.Models.Categories", b =>
                 {
@@ -71,23 +56,6 @@ namespace worldcup.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
-                });
-
-            modelBuilder.Entity("worldcup.Models.CategoriesTransport", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("CategoriesTransport");
                 });
 
             modelBuilder.Entity("worldcup.Models.Cities", b =>
@@ -152,23 +120,18 @@ namespace worldcup.Migrations
 
             modelBuilder.Entity("worldcup.Models.ScheduleTeam", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
                     b.Property<int>("ScheduleId")
                         .HasColumnType("int");
 
-                    b.Property<int>("StadiumId")
+                    b.Property<int>("TeamId")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
 
-                    b.HasIndex("ScheduleId");
+                    b.HasKey("ScheduleId", "TeamId");
 
-                    b.HasIndex("StadiumId");
+                    b.HasIndex("TeamId");
 
                     b.ToTable("ScheduleTeam");
                 });
@@ -295,19 +258,21 @@ namespace worldcup.Migrations
                     b.ToTable("Transport");
                 });
 
-            modelBuilder.Entity("ScheduleTeams", b =>
+            modelBuilder.Entity("worldcup.Models.TransportType", b =>
                 {
-                    b.HasOne("worldcup.Models.Schedule", null)
-                        .WithMany()
-                        .HasForeignKey("ScheduleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.HasOne("worldcup.Models.Teams", null)
-                        .WithMany()
-                        .HasForeignKey("TeamsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CategoriesTransport");
                 });
 
             modelBuilder.Entity("worldcup.Models.Cities", b =>
@@ -324,7 +289,7 @@ namespace worldcup.Migrations
             modelBuilder.Entity("worldcup.Models.Schedule", b =>
                 {
                     b.HasOne("worldcup.Models.Stadiums", "Stadium")
-                        .WithMany()
+                        .WithMany("Schedule")
                         .HasForeignKey("StadiumId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -335,20 +300,20 @@ namespace worldcup.Migrations
             modelBuilder.Entity("worldcup.Models.ScheduleTeam", b =>
                 {
                     b.HasOne("worldcup.Models.Schedule", "Schedule")
-                        .WithMany()
+                        .WithMany("ScheduleTeam")
                         .HasForeignKey("ScheduleId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("worldcup.Models.Stadiums", "Stadium")
-                        .WithMany()
-                        .HasForeignKey("StadiumId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                    b.HasOne("worldcup.Models.Teams", "Teams")
+                        .WithMany("ScheduleTeam")
+                        .HasForeignKey("TeamId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Schedule");
 
-                    b.Navigation("Stadium");
+                    b.Navigation("Teams");
                 });
 
             modelBuilder.Entity("worldcup.Models.Stadiums", b =>
@@ -364,7 +329,7 @@ namespace worldcup.Migrations
 
             modelBuilder.Entity("worldcup.Models.Transport", b =>
                 {
-                    b.HasOne("worldcup.Models.CategoriesTransport", "Vehicle")
+                    b.HasOne("worldcup.Models.TransportType", "Vehicle")
                         .WithMany()
                         .HasForeignKey("VehicleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -376,6 +341,21 @@ namespace worldcup.Migrations
             modelBuilder.Entity("worldcup.Models.Provinces", b =>
                 {
                     b.Navigation("Cities");
+                });
+
+            modelBuilder.Entity("worldcup.Models.Schedule", b =>
+                {
+                    b.Navigation("ScheduleTeam");
+                });
+
+            modelBuilder.Entity("worldcup.Models.Stadiums", b =>
+                {
+                    b.Navigation("Schedule");
+                });
+
+            modelBuilder.Entity("worldcup.Models.Teams", b =>
+                {
+                    b.Navigation("ScheduleTeam");
                 });
 #pragma warning restore 612, 618
         }

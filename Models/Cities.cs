@@ -9,7 +9,7 @@ namespace worldcup.Models
         public int Id { get; set; }
         public required string Name { get; set; }
 
-        [ForeignKey("ProvinceId")]
+        public int ProvinceId { get; set; }  // Explicit Foreign Key
         public required Provinces Province { get; set; } // Navigation Property
     }
 }

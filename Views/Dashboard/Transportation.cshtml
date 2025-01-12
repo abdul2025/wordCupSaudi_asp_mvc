@@ -1,85 +1,76 @@
 @{
+    Layout="~/Views/Shared/_LayoutAdmin.cshtml";
     ViewData["Title"] = "Transportation";
 }
+<link href="~/css/AdminCss/base.css" rel="stylesheet" type="text/css" />
+@model IEnumerable<TransportType>
+@section Scripts {
+    <script src="~/js/Dashboard/catTrans.js"></script>
+}
 
-@model IEnumerable<CategoriesTransport>
-
-
-<h1>@ViewData["Title"]</h1>
 
 
 
-<div class="container-fluid ">
+
+<div class="container-fluid mt-5 mb-5">
     <div class="row mt-5">
         <div class="col text-start">
             <!-- Trigger button -->
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#categoryModal">
-                Create Categories Transportation
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#catTModal">
+                Create Transportation Type
             </button>
         </div>
-        
-
-
-
     </div>
     
     <div class="row mt-5">
-        @foreach (var catT in Model)
-        {
-            <div class="col-lg-3 col-md-4 col-sm-12 d-flex flex-column align-items-center mb-4">
-                <div class="card-container position-relative w-100">
-                    <!-- Buttons (always visible at top-right) -->
-                    <div class="action-buttons position-absolute top-0 end-0 m-2">
+        <ul class="list-group w-100">
+            @foreach (var catT in Model)
+            {
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="mb-1">@catT.Name</h5>
+                    </div>
+                    <div>
+                        <!-- Buttons (always visible on the right) -->
                         <button 
-                            class="btn me-2 mt-1 btn-custom" 
+                            class="btn btn-danger me-2" 
                             data-bs-toggle="modal" 
-                            data-bs-target="#deleteModal" 
-                            data-bs-action="@Url.Action('DeleteTrans', 'Dashboard', new { id = catT.Id })" 
+                            data-bs-target="#catTModaldelete" 
+                            data-category-id="@catT.Id"
                             data-category-name="@catT.Name">
-                            <i class="fa-solid fa-trash fa-xs"></i>
+                            <i class="fa-solid fa-trash"></i>
                         </button>
-
                         <button 
-                            class="btn mt-1 btn-custom" 
+                            class="btn btn-primary" 
                             title="Edit" 
                             data-bs-toggle="modal" 
                             data-bs-target="#editModal"
+                            data-category-id="@catT.Id"
                             data-category-name="@catT.Name">
-                            <i class="fa-regular fa-pen-to-square fa-xs"></i>
+                            <i class="fa-regular fa-pen-to-square"></i>
                         </button>
                     </div>
+                </li>
+            }
+        </ul>
 
-                    <!-- Card -->
-                    <div class="card d-flex flex-column h-100 custom-card-index">
-                        <!-- Card Body -->
-                        <div class="card-body d-flex flex-column text-center">
-                            <h5 class="card-title">@catT.Name</h5>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-
-
-
-        }
     </div>
-    <div class="row mt-5">
 
+
+
+    <div class="row mt-5">
         <!-- Create Modal -->
-        <div class="modal fade" id="categoryModal" tabindex="-1" aria-labelledby="categoryModalLabel" aria-hidden="true">
+        <div class="modal fade" id="catTModal" tabindex="-1" aria-labelledby="catTModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="categoryModalLabel">Create Category Transportation</h5>
+                        <h5 class="modal-title" id="catTModalLabel">Create Transportation Type</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form action="CreateCategorieTran" method="post" enctype="multipart/form-data">
+                        <form action="CreateTransportationCategorie" method="post">
                             <!-- Name Field -->
-                            <input type="text" class="form-control " id="categoryName" name="Name" placeholder="Enter Category Name" required>
-                            
+                            <input type="text" class="form-control " id="categoryName" name="Name" placeholder="Enter Transportation Category Name" required>
                             <!-- Submit and Cancel Buttons -->
                             <div class="d-flex justify-content-center mt-3">
                                 <button type="submit" class="btn btn-primary">Submit</button>
@@ -91,21 +82,21 @@
         </div>
 
         <!-- Delete Modal -->
-        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal fade" id="catTModaldelete" tabindex="-1" aria-labelledby="catTModaldeleteLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
+                        <h5 class="modal-title" id="catTModaldeleteLabel">Confirm Delete</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        Are you sure you want to delete the category Transportation "<span id="categoryNameToDelete"></span>"?
+                        Are you sure you want to delete the Type "<span id="catTNameToDelete"></span>"?
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                         <!-- Form for deletion -->
                         <form id="deleteForm" method="post">
-                            <input type="hidden" name="id" value="" id="deleteCategoryId">
+                            <input type="hidden" name="Id" id="deleteCategoryId" value="" />
                             <button type="submit" class="btn btn-danger">Delete</button>
                         </form>
                     </div>
@@ -113,30 +104,38 @@
             </div>
         </div>
 
+
         <!-- Edit Modal -->
         <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editModalLabel">Edit Category Transportation</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form method="post" enctype="multipart/form-data">
-                        <!-- Name Field -->
-                        <input type="text" class="form-control " name="Name" placeholder="Enter Category Name" required>
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editModalLabel">Edit Transportation Type</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="post">
+                            <!-- Hidden field for ID -->
+                            <input type="hidden" name="Id" value="" />
 
-                        <!-- Submit and Cancel Buttons -->
-                        <div class="d-flex justify-content-center mt-3">
-                            <button type="submit" class="btn btn-primary">Save Changes</button>
-                        </div>
-                    </form>
+                            <!-- Name Field -->
+                            <input type="text" class="form-control" name="Name" placeholder="Enter Category Transportation Name" required />
+
+                            <!-- Submit and Cancel Buttons -->
+                            <div class="d-flex justify-content-center mt-3">
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+        
+
+
 
     </div>
+
 
 
 </div>

@@ -13,9 +13,5 @@ namespace worldcup.Models
         public required string Url { get; set; }
         public required string Image { get; set; }
 
-        internal static string? ToList()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

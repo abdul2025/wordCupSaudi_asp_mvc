@@ -11,7 +11,7 @@ namespace worldcup.Models
         public required string Name { get; set; }
         public int Capacity { get; set; }
         
-        [ForeignKey("CityId")]
+        public required int CityId { get; set; } // Foreign Key
         public required Cities City { get; set; } // Navigation Property
         public required string Type { get; set; }
         public DateTime ContractionDate { get; set; }
@@ -21,7 +21,7 @@ namespace worldcup.Models
         public double Height { get; set; }
         public required string Images { get; set; }
         public List<string> Facility { get; set; } = new List<string>();
+        public ICollection<Schedule>? Schedule { get; set; } // One-to-Many
 
-        
     }
 }

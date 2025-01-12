@@ -13,15 +13,13 @@ namespace worldcup.Models
         public required DateTime MatchDateTime { get; set; }
 
 
-        [ForeignKey("StadiumId")]
+        public required int StadiumId { get; set; } // Navigation Property
         public required Stadiums Stadium { get; set; } // Navigation Property
 
+        public ICollection<Teams> Teams { get; set; } = new List<Teams>(); 
 
-        public required ICollection<Teams> Teams { get; set; } // Navigation Property
 
     }
-
-
     
 }
 

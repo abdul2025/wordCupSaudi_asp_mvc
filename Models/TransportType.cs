@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace worldcup.Models
 {
-    public class CategoriesTransport
+    public class TransportType
     {
         [Key]
         public int Id { get; set; }

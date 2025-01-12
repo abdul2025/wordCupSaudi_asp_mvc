@@ -12,8 +12,8 @@ using worldcup.Data;
 namespace worldcup.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250101182231_init")]
-    partial class init
+    [Migration("20250108193651_change to categoryTrans to TransportType")]
+    partial class changetocategoryTranstoTransportType
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,21 +24,6 @@ namespace worldcup.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("ScheduleTeams", b =>
-                {
-                    b.Property<int>("ScheduleId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TeamsId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ScheduleId", "TeamsId");
-
-                    b.HasIndex("TeamsId");
-
-                    b.ToTable("ScheduleTeams");
-                });
 
             modelBuilder.Entity("worldcup.Models.Categories", b =>
                 {
@@ -70,24 +55,7 @@ namespace worldcup.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("categories");
-                });
-
-            modelBuilder.Entity("worldcup.Models.CategoriesTransport", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("categoriesTransports");
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("worldcup.Models.Cities", b =>
@@ -109,7 +77,7 @@ namespace worldcup.Migrations
 
                     b.HasIndex("ProvinceId");
 
-                    b.ToTable("cities");
+                    b.ToTable("Cities");
                 });
 
             modelBuilder.Entity("worldcup.Models.Provinces", b =>
@@ -126,7 +94,7 @@ namespace worldcup.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("provinces");
+                    b.ToTable("Provinces");
                 });
 
             modelBuilder.Entity("worldcup.Models.Schedule", b =>
@@ -137,9 +105,6 @@ namespace worldcup.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CityId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("MatchDateTime")
                         .HasColumnType("datetime2");
 
@@ -148,34 +113,27 @@ namespace worldcup.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CityId");
-
                     b.HasIndex("StadiumId");
 
-                    b.ToTable("schedule");
+                    b.ToTable("Schedule");
                 });
 
             modelBuilder.Entity("worldcup.Models.ScheduleTeam", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
                     b.Property<int>("ScheduleId")
                         .HasColumnType("int");
 
-                    b.Property<int>("StadiumId")
+                    b.Property<int>("TeamId")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
 
-                    b.HasIndex("ScheduleId");
+                    b.HasKey("ScheduleId", "TeamId");
 
-                    b.HasIndex("StadiumId");
+                    b.HasIndex("TeamId");
 
-                    b.ToTable("scheduleTeam");
+                    b.ToTable("ScheduleTeam");
                 });
 
             modelBuilder.Entity("worldcup.Models.Stadiums", b =>
@@ -189,9 +147,8 @@ namespace worldcup.Migrations
                     b.Property<int>("Capacity")
                         .HasColumnType("int");
 
-                    b.Property<string>("City")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("CityId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("ContractionDate")
                         .HasColumnType("datetime2");
@@ -227,7 +184,9 @@ namespace worldcup.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("stadiums");
+                    b.HasIndex("CityId");
+
+                    b.ToTable("Stadiums");
                 });
 
             modelBuilder.Entity("worldcup.Models.Teams", b =>
@@ -251,7 +210,7 @@ namespace worldcup.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("team");
+                    b.ToTable("Teams");
                 });
 
             modelBuilder.Entity("worldcup.Models.Transport", b =>
@@ -296,22 +255,24 @@ namespace worldcup.Migrations
 
                     b.HasIndex("VehicleId");
 
-                    b.ToTable("transport");
+                    b.ToTable("Transport");
                 });
 
-            modelBuilder.Entity("ScheduleTeams", b =>
+            modelBuilder.Entity("worldcup.Models.TransportType", b =>
                 {
-                    b.HasOne("worldcup.Models.Schedule", null)
-                        .WithMany()
-                        .HasForeignKey("ScheduleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.HasOne("worldcup.Models.Teams", null)
-                        .WithMany()
-                        .HasForeignKey("TeamsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TransportType");
                 });
 
             modelBuilder.Entity("worldcup.Models.Cities", b =>
@@ -327,19 +288,11 @@ namespace worldcup.Migrations
 
             modelBuilder.Entity("worldcup.Models.Schedule", b =>
                 {
-                    b.HasOne("worldcup.Models.Cities", "City")
-                        .WithMany()
-                        .HasForeignKey("CityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("worldcup.Models.Stadiums", "Stadium")
-                        .WithMany()
+                        .WithMany("Schedule")
                         .HasForeignKey("StadiumId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("City");
 
                     b.Navigation("Stadium");
                 });
@@ -347,25 +300,36 @@ namespace worldcup.Migrations
             modelBuilder.Entity("worldcup.Models.ScheduleTeam", b =>
                 {
                     b.HasOne("worldcup.Models.Schedule", "Schedule")
-                        .WithMany()
+                        .WithMany("ScheduleTeam")
                         .HasForeignKey("ScheduleId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("worldcup.Models.Stadiums", "Stadium")
-                        .WithMany()
-                        .HasForeignKey("StadiumId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                    b.HasOne("worldcup.Models.Teams", "Teams")
+                        .WithMany("ScheduleTeam")
+                        .HasForeignKey("TeamId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Schedule");
 
-                    b.Navigation("Stadium");
+                    b.Navigation("Teams");
+                });
+
+            modelBuilder.Entity("worldcup.Models.Stadiums", b =>
+                {
+                    b.HasOne("worldcup.Models.Cities", "City")
+                        .WithMany()
+                        .HasForeignKey("CityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("City");
                 });
 
             modelBuilder.Entity("worldcup.Models.Transport", b =>
                 {
-                    b.HasOne("worldcup.Models.CategoriesTransport", "Vehicle")
+                    b.HasOne("worldcup.Models.TransportType", "Vehicle")
                         .WithMany()
                         .HasForeignKey("VehicleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -377,6 +341,21 @@ namespace worldcup.Migrations
             modelBuilder.Entity("worldcup.Models.Provinces", b =>
                 {
                     b.Navigation("Cities");
+                });
+
+            modelBuilder.Entity("worldcup.Models.Schedule", b =>
+                {
+                    b.Navigation("ScheduleTeam");
+                });
+
+            modelBuilder.Entity("worldcup.Models.Stadiums", b =>
+                {
+                    b.Navigation("Schedule");
+                });
+
+            modelBuilder.Entity("worldcup.Models.Teams", b =>
+                {
+                    b.Navigation("ScheduleTeam");
                 });
 #pragma warning restore 612, 618
         }

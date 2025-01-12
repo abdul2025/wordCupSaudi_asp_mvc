@@ -10,6 +10,7 @@ namespace worldcup.Models
         public required string Country { get; set; }
         public required DateTime founded { get; set; }
 
-        public required ICollection<Schedule> Schedule { get; set; } // Navigation Property
+        public ICollection<Schedule> Schedules { get; set; } = new List<Schedule>();
+
     }
 }
