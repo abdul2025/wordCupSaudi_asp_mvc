@@ -211,29 +211,29 @@ namespace worldcup.Controllers
         // Schedule END #######################
 
 
-        // Transportation START #######################
-        // Transportation START #######################
-        // Transportation START #######################
-        // Transportation START #######################
-        // Transportation START #######################
-        // Transportation START #######################
-        // Transportation START #######################
-        // Transportation START #######################
-        // Transportation START #######################
-        public async Task<IActionResult> Transportation()
+        // Transportation Type START #######################
+        // Transportation Type START #######################
+        // Transportation Type START #######################
+        // Transportation Type START #######################
+        // Transportation Type START #######################
+        // Transportation Type START #######################
+        // Transportation Type START #######################
+        // Transportation Type START #######################
+        // Transportation Type START #######################
+        public async Task<IActionResult> TransportType()
         {
             var transportation = await _context.TransportType.ToListAsync();
             return View(transportation);
         }
 
 
-        public async Task<IActionResult> CreateTransportationCategorie(TransportType model){
+        public async Task<IActionResult> CreateTransportType(TransportType model){
             _context.TransportType.Add(model);
             await _context.SaveChangesAsync();
-            return RedirectToAction("Transportation");
+            return RedirectToAction("TransportType");
         }
 
-        public async Task<IActionResult> EditTransportationCategorie(int id, TransportType model)
+        public async Task<IActionResult> EditTransportType(int id, TransportType model)
         {
             // Find the existing category by ID
             var existingCategory = await _context.TransportType.FindAsync(id);
@@ -252,12 +252,12 @@ namespace worldcup.Controllers
             await _context.SaveChangesAsync();
 
             // Redirect back to the Transportation view
-            return RedirectToAction("Transportation");
+            return RedirectToAction("TransportType");
         }
 
 
 
-        public async Task<IActionResult> DeleteTrans(int id)
+        public async Task<IActionResult> DeleteTransportType(int id)
         {
             // Find the record by its ID
             var transportation = await _context.TransportType.FindAsync(id);
@@ -273,7 +273,85 @@ namespace worldcup.Controllers
             await _context.SaveChangesAsync();
 
             // Redirect to the Transportation view
-            return RedirectToAction("Transportation");
+            return RedirectToAction("TransportType");
+        }
+
+
+        // Transportation Type END #######################
+        // Transportation Type END #######################
+        // Transportation Type END #######################
+        // Transportation Type END #######################
+        // Transportation Type END #######################
+        // Transportation Type END #######################
+        // Transportation Type END #######################
+
+
+
+        // Transportation START #######################
+        // Transportation START #######################
+        // Transportation START #######################
+        // Transportation START #######################
+        // Transportation START #######################
+        // Transportation START #######################
+        // Transportation START #######################
+        // Transportation START #######################
+        // Transportation START #######################
+        public async Task<IActionResult> Transportation()
+        {
+            var transportation = await _context.Transport.ToListAsync();
+            Console.WriteLine("transportation");
+            Console.WriteLine(transportation);
+            return View(transportation);
+        }
+
+
+        public async Task<IActionResult> CreateTransport(Transport model){
+            _context.Transport.Add(model);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("TransportType");
+        }
+
+        public async Task<IActionResult> EditTransport(int id, Transport model)
+        {
+            // Find the existing category by ID
+            var existingCategory = await _context.Transport.FindAsync(id);
+            
+            if (existingCategory == null)
+            {
+                // Return a 404 error or an appropriate response if the category is not found
+                return NotFound();
+            }
+
+            // Update the properties of the existing category
+            existingCategory.Name = model.Name;
+
+            // Save the changes to the database
+            _context.Transport.Update(existingCategory);
+            await _context.SaveChangesAsync();
+
+            // Redirect back to the Transportation view
+            return RedirectToAction("TransportType");
+        }
+
+
+
+        public async Task<IActionResult> DeleteTransport(int id)
+        {
+            // Find the record by its ID
+            var transportation = await _context.Transport.FindAsync(id);
+            
+            if (transportation == null)
+            {
+                // Return a 404 error or an appropriate response if the record is not found
+                return NotFound();
+            }
+
+            // Remove the record from the database
+            _context.Transport.Remove(transportation);
+            await _context.SaveChangesAsync();
+
+            // Redirect to the Transportation view
+            return RedirectToAction("TransportType");
         }
 
 

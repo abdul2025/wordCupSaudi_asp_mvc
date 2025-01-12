@@ -1,9 +1,9 @@
 @{
     Layout="~/Views/Shared/_LayoutAdmin.cshtml";
-    ViewData["Title"] = "Transportation";
+    ViewData["Title"] = "Transportation Type";
 }
 <link href="~/css/AdminCss/base.css" rel="stylesheet" type="text/css" />
-@model IEnumerable<Transport>
+@model IEnumerable<TransportType>
 @section Scripts {
     <script src="~/js/Dashboard/catTrans.js"></script>
 }
@@ -15,7 +15,7 @@
         <div class="col text-start">
             <!-- Trigger button -->
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#catTModal">
-                Create Transportation
+                Create Transportation Type
             </button>
         </div>
     </div>
@@ -34,7 +34,7 @@
                             data-bs-toggle="modal" 
                             data-bs-target="#deleteModal"
                             data-id="@item.Id"
-                            data-url="/Dashboard/DeleteTransport/"
+                            data-url="/Dashboard/DeleteTransportType/"
                             data-name="@item.Name">
                             <i class="fa-solid fa-trash"></i>
                         </button>
@@ -44,7 +44,7 @@
                             data-bs-toggle="modal" 
                             data-bs-target="#editModal"
                             data-id="@item.Id"
-                            data-url="/Dashboard/EditTransport/"
+                            data-url="/Dashboard/EditTransportType/"
                             data-name="@item.Name">
                             <i class="fa-regular fa-pen-to-square"></i>
                         </button>
@@ -62,13 +62,13 @@
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="catTModalLabel">Create Transportation</h5>
+                        <h5 class="modal-title" id="catTModalLabel">Create Transportation Type</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form action="CreateTransport" method="post">
+                        <form action="CreateTransportType" method="post">
                             <!-- Name Field -->
-                            <input type="text" class="form-control " id="categoryName" name="Name" placeholder="Enter Transportation Name" required>
+                            <input type="text" class="form-control " id="categoryName" name="Name" placeholder="Enter Transportation Category Name" required>
                             <!-- Submit and Cancel Buttons -->
                             <div class="d-flex justify-content-center mt-3">
                                 <button type="submit" class="btn btn-primary">Submit</button>
@@ -108,7 +108,7 @@
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="editModalLabel">Edit Transportation</h5>
+                        <h5 class="modal-title" id="editModalLabel">Edit Transportation Type</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -128,5 +128,12 @@
                 </div>
             </div>
         </div>
+        
+
+
+
     </div>
+
+
+
 </div>
