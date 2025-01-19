@@ -5,19 +5,27 @@ document.addEventListener('DOMContentLoaded', function () {
     if (editModal) {
         editModal.addEventListener('show.bs.modal', function (event) {
             console.log('Edit Action');
+            
             // Button that triggered the modal
             var button = event.relatedTarget;
-
-            // Extract data-* attributes
-            var id = button.getAttribute('data-id');
-            var name = button.getAttribute('data-name');
-            var url = button.getAttribute('data-url');
-
-            // Update modal fields
-            editModal.querySelector('input[name="Id"]').value = id;
-            editModal.querySelector('input[name="Name"]').value = name;
-
+        
+            // Extract all data-* attributes dynamically
+            Array.from(button.attributes)
+                .filter(attr => attr.name.startsWith('data-')) // Select only data-* attributes
+                .forEach(attr => {
+                    const attributeName = attr.name.replace('data-', ''); // Get the part after "data-"
+                    const input = editModal.querySelector(`input[name="${attributeName}"]`); // Find matching input
+                    console.log(`Value: ${input}, attributeName: ${attributeName}-`)
+                    
+                    if (input) {
+                        console.log(`Value: ${input.value}, attributeName: ${attributeName}-${attr.value}`)
+                        input.value = attr.value; // Set the input value
+                    };
+                });
+        
             // Update form action dynamically
+            var url = button.getAttribute('data-url');
+            var id = button.getAttribute('data-id'); // Keep specific cases if needed
             var form = editModal.querySelector('form');
             form.action = `${url}${id}`;
         });

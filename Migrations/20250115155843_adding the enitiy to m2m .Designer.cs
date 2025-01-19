@@ -12,8 +12,8 @@ using worldcup.Data;
 namespace worldcup.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250108193258_init")]
-    partial class init
+    [Migration("20250115155843_adding the enitiy to m2m ")]
+    partial class addingtheenitiytom2m
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,21 @@ namespace worldcup.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("ScheduleTeams", b =>
+                {
+                    b.Property<int>("SchedulesId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TeamsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("SchedulesId", "TeamsId");
+
+                    b.HasIndex("TeamsId");
+
+                    b.ToTable("ScheduleTeams");
+                });
 
             modelBuilder.Entity("worldcup.Models.Categories", b =>
                 {
@@ -116,24 +131,6 @@ namespace worldcup.Migrations
                     b.HasIndex("StadiumId");
 
                     b.ToTable("Schedule");
-                });
-
-            modelBuilder.Entity("worldcup.Models.ScheduleTeam", b =>
-                {
-                    b.Property<int>("ScheduleId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TeamId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
-                    b.HasKey("ScheduleId", "TeamId");
-
-                    b.HasIndex("TeamId");
-
-                    b.ToTable("ScheduleTeam");
                 });
 
             modelBuilder.Entity("worldcup.Models.Stadiums", b =>
@@ -272,7 +269,22 @@ namespace worldcup.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CategoriesTransport");
+                    b.ToTable("TransportType");
+                });
+
+            modelBuilder.Entity("ScheduleTeams", b =>
+                {
+                    b.HasOne("worldcup.Models.Schedule", null)
+                        .WithMany()
+                        .HasForeignKey("SchedulesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("worldcup.Models.Teams", null)
+                        .WithMany()
+                        .HasForeignKey("TeamsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("worldcup.Models.Cities", b =>
@@ -295,25 +307,6 @@ namespace worldcup.Migrations
                         .IsRequired();
 
                     b.Navigation("Stadium");
-                });
-
-            modelBuilder.Entity("worldcup.Models.ScheduleTeam", b =>
-                {
-                    b.HasOne("worldcup.Models.Schedule", "Schedule")
-                        .WithMany("ScheduleTeam")
-                        .HasForeignKey("ScheduleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("worldcup.Models.Teams", "Teams")
-                        .WithMany("ScheduleTeam")
-                        .HasForeignKey("TeamId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Schedule");
-
-                    b.Navigation("Teams");
                 });
 
             modelBuilder.Entity("worldcup.Models.Stadiums", b =>
@@ -343,19 +336,9 @@ namespace worldcup.Migrations
                     b.Navigation("Cities");
                 });
 
-            modelBuilder.Entity("worldcup.Models.Schedule", b =>
-                {
-                    b.Navigation("ScheduleTeam");
-                });
-
             modelBuilder.Entity("worldcup.Models.Stadiums", b =>
                 {
                     b.Navigation("Schedule");
-                });
-
-            modelBuilder.Entity("worldcup.Models.Teams", b =>
-                {
-                    b.Navigation("ScheduleTeam");
                 });
 #pragma warning restore 612, 618
         }

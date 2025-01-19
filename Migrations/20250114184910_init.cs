@@ -29,19 +29,6 @@ namespace worldcup.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CategoriesTransport",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CategoriesTransport", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Provinces",
                 columns: table => new
                 {
@@ -70,29 +57,16 @@ namespace worldcup.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Transport",
+                name: "TransportType",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Capacity = table.Column<int>(type: "int", nullable: false),
-                    VehicleId = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Color = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Image = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Model = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ModelVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Km = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Transport", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Transport_CategoriesTransport_VehicleId",
-                        column: x => x.VehicleId,
-                        principalTable: "CategoriesTransport",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                    table.PrimaryKey("PK_TransportType", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -111,6 +85,32 @@ namespace worldcup.Migrations
                         name: "FK_Cities_Provinces_ProvinceId",
                         column: x => x.ProvinceId,
                         principalTable: "Provinces",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Transport",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Capacity = table.Column<int>(type: "int", nullable: false),
+                    VehicleId = table.Column<int>(type: "int", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Color = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Image = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Model = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ModelVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Km = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Transport", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Transport_TransportType_VehicleId",
+                        column: x => x.VehicleId,
+                        principalTable: "TransportType",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -168,13 +168,15 @@ namespace worldcup.Migrations
                 name: "ScheduleTeam",
                 columns: table => new
                 {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     ScheduleId = table.Column<int>(type: "int", nullable: false),
                     TeamId = table.Column<int>(type: "int", nullable: false),
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    TeamsId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ScheduleTeam", x => new { x.ScheduleId, x.TeamId });
+                    table.PrimaryKey("PK_ScheduleTeam", x => x.Id);
                     table.ForeignKey(
                         name: "FK_ScheduleTeam_Schedule_ScheduleId",
                         column: x => x.ScheduleId,
@@ -182,8 +184,32 @@ namespace worldcup.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ScheduleTeam_Teams_TeamId",
-                        column: x => x.TeamId,
+                        name: "FK_ScheduleTeam_Teams_TeamsId",
+                        column: x => x.TeamsId,
+                        principalTable: "Teams",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ScheduleTeams",
+                columns: table => new
+                {
+                    SchedulesId = table.Column<int>(type: "int", nullable: false),
+                    TeamsId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ScheduleTeams", x => new { x.SchedulesId, x.TeamsId });
+                    table.ForeignKey(
+                        name: "FK_ScheduleTeams_Schedule_SchedulesId",
+                        column: x => x.SchedulesId,
+                        principalTable: "Schedule",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ScheduleTeams_Teams_TeamsId",
+                        column: x => x.TeamsId,
                         principalTable: "Teams",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -200,9 +226,19 @@ namespace worldcup.Migrations
                 column: "StadiumId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ScheduleTeam_TeamId",
+                name: "IX_ScheduleTeam_ScheduleId",
                 table: "ScheduleTeam",
-                column: "TeamId");
+                column: "ScheduleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ScheduleTeam_TeamsId",
+                table: "ScheduleTeam",
+                column: "TeamsId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ScheduleTeams_TeamsId",
+                table: "ScheduleTeams",
+                column: "TeamsId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Stadiums_CityId",
@@ -225,6 +261,9 @@ namespace worldcup.Migrations
                 name: "ScheduleTeam");
 
             migrationBuilder.DropTable(
+                name: "ScheduleTeams");
+
+            migrationBuilder.DropTable(
                 name: "Transport");
 
             migrationBuilder.DropTable(
@@ -234,7 +273,7 @@ namespace worldcup.Migrations
                 name: "Teams");
 
             migrationBuilder.DropTable(
-                name: "CategoriesTransport");
+                name: "TransportType");
 
             migrationBuilder.DropTable(
                 name: "Stadiums");

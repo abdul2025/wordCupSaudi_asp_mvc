@@ -12,8 +12,8 @@ using worldcup.Data;
 namespace worldcup.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250109174112_fix m2m to team to shcdual")]
-    partial class fixm2mtoteamtoshcdual
+    [Migration("20250115160903_remove m2m relatiion")]
+    partial class removem2mrelatiion
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,21 +24,6 @@ namespace worldcup.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("ScheduleTeams", b =>
-                {
-                    b.Property<int>("SchedulesId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TeamsId")
-                        .HasColumnType("int");
-
-                    b.HasKey("SchedulesId", "TeamsId");
-
-                    b.HasIndex("TeamsId");
-
-                    b.ToTable("ScheduleTeams", (string)null);
-                });
 
             modelBuilder.Entity("worldcup.Models.Categories", b =>
                 {
@@ -270,21 +255,6 @@ namespace worldcup.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("TransportType");
-                });
-
-            modelBuilder.Entity("ScheduleTeams", b =>
-                {
-                    b.HasOne("worldcup.Models.Schedule", null)
-                        .WithMany()
-                        .HasForeignKey("SchedulesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("worldcup.Models.Teams", null)
-                        .WithMany()
-                        .HasForeignKey("TeamsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("worldcup.Models.Cities", b =>

@@ -9,6 +9,8 @@ using System.Globalization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Build.Framework;
+using worldcup.DTO;
 
 namespace worldcup.Controllers
 {
@@ -193,12 +195,44 @@ namespace worldcup.Controllers
         public async Task<IActionResult> Schedule()
         {
 
-            Console.WriteLine("schedulesschedulesschedulesschedulesschedulesschedulesschedulesschedules");
-            var schedules = await _context.Schedule.ToListAsync();
+            try {
+                var stadiums = await _context.Stadiums.Select(s => new StadiumsName
+                {
+                    Name = s.Name,
+                    Id = s.Id
+                }).ToListAsync();
 
 
-            return View(schedules); 
-            
+
+                ViewBag.stadiums = stadiums;
+                
+            }catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+
+            try
+            {
+            var schedules = await _context.Schedule
+                .Include(s => s.Stadium)  // Include the related Stadium entity
+                .Include(s => s.Teams)    // Include the related Teams
+                .Select(s => new ScheduleWithStadiumAndTeamsDTO
+                {
+                    ScheduleId = s.Id,
+                    StadiumName = s.Stadium.Name,  // Fetch the Stadium name
+                    StadiumId = s.Stadium.Id,  // Fetch the Stadium name
+                    StadiumCity = s.Stadium.City.Name,  // Fetch the Stadium name
+                    ScheduleDate = s.MatchDateTime,     // Assuming you have a DateTime field for the schedule
+                    TeamNames = s.Teams.Select(t => t.Name).ToList()  // Select only the Team Names
+                })
+                .ToListAsync();
+                return View(schedules);
+            }
+            catch (Exception ex)
+            {
+                // Log the error and return an appropriate view or error message
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
         // Schedule END #######################
         // Schedule END #######################
@@ -298,35 +332,61 @@ namespace worldcup.Controllers
         // Transportation START #######################
         public async Task<IActionResult> Transportation()
         {
-            var transportation = await _context.Transport.ToListAsync();
-            Console.WriteLine("transportation");
-            Console.WriteLine(transportation);
+            var transportation = await _context.Transport.Include(t => t.Vehicle) // Include the related Vehicle (TransportType)
+                .ToListAsync();
+            var trnType = await _context.TransportType.ToListAsync();
+            ViewBag.trnType = trnType;
             return View(transportation);
         }
 
 
-        public async Task<IActionResult> CreateTransport(Transport model){
-            _context.Transport.Add(model);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("TransportType");
+        public async Task<IActionResult> CreateTransport(Transport transport_model, int vehicleId){
+            if (!ModelState.IsValid)
+            {
+                ViewBag.trnType = _context.TransportType.ToList();  // Re-populate vehicle types if validation fails
+                return View(transport_model);
+            }
+
+            // Save the uploaded image
+            if (Request.Form.Files.Count > 0)
+            {
+                var file = Request.Form.Files[0];
+                if (file.Length > 0)
+                {
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", file.FileName);
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        file.CopyTo(stream);
+                    }
+                    transport_model.Image = $"/images/{file.FileName}";
+                }
+            }
+
+            transport_model.VehicleId = vehicleId;
+            // Add the transport to the database
+            _context.Transport.Add(transport_model);
+            _context.SaveChanges();
+
+            TempData["SuccessMessage"] = "Transport created successfully!";
+            return RedirectToAction("TransportList");  // Redirect to the transport list page or another view
         }
 
-        public async Task<IActionResult> EditTransport(int id, Transport model)
+        public async Task<IActionResult> EditTransport(int id, Transport Transportmodel)
         {
             // Find the existing category by ID
-            var existingCategory = await _context.Transport.FindAsync(id);
+            var existingTransportmodel = await _context.Transport.FindAsync(id);
             
-            if (existingCategory == null)
+            if (existingTransportmodel == null)
             {
                 // Return a 404 error or an appropriate response if the category is not found
                 return NotFound();
             }
 
             // Update the properties of the existing category
-            existingCategory.Name = model.Name;
+            existingTransportmodel.Name = Transportmodel.Name;
 
             // Save the changes to the database
-            _context.Transport.Update(existingCategory);
+            _context.Transport.Update(existingTransportmodel);
             await _context.SaveChangesAsync();
 
             // Redirect back to the Transportation view

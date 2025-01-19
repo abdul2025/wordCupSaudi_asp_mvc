@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using worldcup.Data;
 
@@ -11,9 +12,11 @@ using worldcup.Data;
 namespace worldcup.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250114184910_init")]
+    partial class init
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -128,6 +131,32 @@ namespace worldcup.Migrations
                     b.HasIndex("StadiumId");
 
                     b.ToTable("Schedule");
+                });
+
+            modelBuilder.Entity("worldcup.Models.ScheduleTeam", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ScheduleId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TeamId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TeamsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ScheduleId");
+
+                    b.HasIndex("TeamsId");
+
+                    b.ToTable("ScheduleTeam");
                 });
 
             modelBuilder.Entity("worldcup.Models.Stadiums", b =>
@@ -304,6 +333,25 @@ namespace worldcup.Migrations
                         .IsRequired();
 
                     b.Navigation("Stadium");
+                });
+
+            modelBuilder.Entity("worldcup.Models.ScheduleTeam", b =>
+                {
+                    b.HasOne("worldcup.Models.Schedule", "Schedule")
+                        .WithMany()
+                        .HasForeignKey("ScheduleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("worldcup.Models.Teams", "Teams")
+                        .WithMany()
+                        .HasForeignKey("TeamsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Schedule");
+
+                    b.Navigation("Teams");
                 });
 
             modelBuilder.Entity("worldcup.Models.Stadiums", b =>

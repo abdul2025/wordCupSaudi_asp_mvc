@@ -10,7 +10,6 @@ namespace worldcup.Models
         public required string Country { get; set; }
         public required DateTime founded { get; set; }
 
-        public ICollection<Schedule> Schedules { get; set; } = new List<Schedule>();
-
+        public List<Schedule> Schedules { get; set; } = new List<Schedule>(); // Many-to-Many
     }
 }

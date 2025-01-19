@@ -36,6 +36,10 @@ app.UseAuthorization();
 
 app.MapStaticAssets();
 
+app.UseAuthentication(); // Authentication middleware
+app.UseAuthorization();  // Authorization middleware
+
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")

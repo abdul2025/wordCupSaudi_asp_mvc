@@ -16,7 +16,7 @@ namespace worldcup.Models
         public required int StadiumId { get; set; } // Navigation Property
         public required Stadiums Stadium { get; set; } // Navigation Property
 
-        public ICollection<Teams> Teams { get; set; } = new List<Teams>(); 
+        public List<Teams> Teams { get; set; } = new List<Teams>(); // Many-to-Many
 
 
     }

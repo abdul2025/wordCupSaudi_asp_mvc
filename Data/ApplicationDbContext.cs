@@ -17,17 +17,16 @@ namespace worldcup.Data
                     .WithMany(p => p.Cities)
                     .HasForeignKey(p => p.ProvinceId); // Specify foreign key
                 
-                modelBuilder.Entity<Schedule>()
-                    .HasOne(s => s.Stadium)
-                    .WithMany(ss => ss.Schedule)
-                    .HasForeignKey(ss => ss.StadiumId); // Specify foreign key
+                // One-to-many relationship: Schedule -> Stadium
+                    modelBuilder.Entity<Schedule>()
+                        .HasOne(s => s.Stadium)
+                        .WithMany(st => st.Schedule)
+                        .HasForeignKey(st => st.StadiumId);
 
-                // Configure Many-to-Many Relationship
-                modelBuilder.Entity<Schedule>()
-                    .HasMany(s => s.Teams)
-                    .WithMany(t => t.Schedules)
-                    .UsingEntity(j => j.ToTable("ScheduleTeams")); // Optional: Rename the join table
-                        
+                    // Configure the many-to-many relationship between Schedule and Team
+                    modelBuilder.Entity<Schedule>()
+                        .HasMany(s => s.Teams)
+                        .WithMany(t => t.Schedules);
             }
 
         
